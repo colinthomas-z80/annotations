@@ -1,0 +1,717 @@
+{
+  "rules": [
+    {
+      "command": "/home/scuzee/Montage/bin/mHdr NGC 3372 2.0 region.hdr",
+      "outputs": [
+        "region.hdr"
+      ],
+      "inputs": []
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl min_raw_j rimages_j.tbl",
+      "outputs": [
+        "rimages_j.tbl"
+      ],
+      "inputs": [
+        "min_raw_j/2mass-atlas-000121s-j0760009.fits",
+        "min_raw_j/2mass-atlas-000121s-j0760021.fits",
+        "min_raw_j/2mass-atlas-000121s-j0760033.fits",
+        "min_raw_j/2mass-atlas-000121s-j0760044.fits",
+        "min_raw_j/2mass-atlas-000121s-j0760056.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770209.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770221.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770233.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770245.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mProjExec -q -p min_raw_j rimages_j.tbl region.hdr projected_j stats.tbl",
+      "outputs": [
+        "projected_j/hdu0_2mass-atlas-000121s-j0760009.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760009_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760021.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760021_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760033.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760033_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760044.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760044_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760056.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760056_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770209.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770209_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770221.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770221_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770233.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770233_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770245.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770245_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770256.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770256_area.fits"
+      ],
+      "inputs": [
+        "min_raw_j/2mass-atlas-000121s-j0760009.fits",
+        "min_raw_j/2mass-atlas-000121s-j0760021.fits",
+        "min_raw_j/2mass-atlas-000121s-j0760033.fits",
+        "min_raw_j/2mass-atlas-000121s-j0760044.fits",
+        "min_raw_j/2mass-atlas-000121s-j0760056.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770209.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770221.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770233.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770245.fits",
+        "min_raw_j/2mass-atlas-000121s-j0770256.fits",
+        "region.hdr",
+        "rimages_j.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl projected_j pimages_j.tbl",
+      "outputs": [
+        "pimages_j.tbl"
+      ],
+      "inputs": [
+        "projected_j/hdu0_2mass-atlas-000121s-j0760009.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760021.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760033.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760044.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760056.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770209.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770221.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770233.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770245.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mOverlaps pimages_j.tbl diffs_j.tbl",
+      "outputs": [
+        "diffs_j.tbl"
+      ],
+      "inputs": [
+        "pimages_j.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mDiffFitExec -p projected_j diffs_j.tbl region.hdr diffs_j fits_j.tbl",
+      "outputs": [
+        "fits_j.tbl"
+      ],
+      "inputs": [
+        "diffs_j.tbl",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760009.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760009_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760021.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760021_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760033.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760033_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760044.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760044_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760056.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760056_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770209.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770209_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770221.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770221_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770233.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770233_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770245.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770245_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770256.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770256_area.fits",
+        "region.hdr"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mBgModel pimages_j.tbl fits_j.tbl corrections_j.tbl",
+      "outputs": [
+        "corrections_j.tbl"
+      ],
+      "inputs": [
+        "fits_j.tbl",
+        "pimages_j.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mBgExec -p projected_j pimages_j.tbl corrections_j.tbl corrected_j",
+      "outputs": [
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760009.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760009_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760021.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760021_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760033.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760033_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760044.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760044_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760056.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760056_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770209.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770209_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770221.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770221_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770233.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770233_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770245.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770245_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770256.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770256_area.fits"
+      ],
+      "inputs": [
+        "corrections_j.tbl",
+        "pimages_j.tbl",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760009.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760009_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760021.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760021_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760033.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760033_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760044.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760044_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760056.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0760056_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770209.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770209_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770221.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770221_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770233.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770233_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770245.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770245_area.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770256.fits",
+        "projected_j/hdu0_2mass-atlas-000121s-j0770256_area.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl corrected_j cimages_j.tbl",
+      "outputs": [
+        "cimages_j.tbl"
+      ],
+      "inputs": [
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760009.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760021.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760033.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760044.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760056.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770209.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770221.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770233.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770245.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mAdd -p corrected_j cimages_j.tbl region.hdr jband.fits",
+      "outputs": [
+        "jband.fits"
+      ],
+      "inputs": [
+        "cimages_j.tbl",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760009.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760009_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760021.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760021_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760033.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760033_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760044.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760044_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760056.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0760056_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770209.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770209_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770221.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770221_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770233.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770233_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770245.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770245_area.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770256.fits",
+        "corrected_j/hdu0_2mass-atlas-000121s-j0770256_area.fits",
+        "region.hdr"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl min_raw_h rimages_h.tbl",
+      "outputs": [
+        "rimages_h.tbl"
+      ],
+      "inputs": [
+        "min_raw_h/2mass-atlas-000121s-h0760009.fits",
+        "min_raw_h/2mass-atlas-000121s-h0760021.fits",
+        "min_raw_h/2mass-atlas-000121s-h0760033.fits",
+        "min_raw_h/2mass-atlas-000121s-h0760044.fits",
+        "min_raw_h/2mass-atlas-000121s-h0760056.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770209.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770221.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770233.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770245.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mProjExec -q -p min_raw_h rimages_h.tbl region.hdr projected_h stats.tbl",
+      "outputs": [
+        "projected_h/hdu0_2mass-atlas-000121s-h0760009.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760009_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760021.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760021_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760033.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760033_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760044.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760044_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760056.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760056_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770209.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770209_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770221.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770221_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770233.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770233_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770245.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770245_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770256.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770256_area.fits"
+      ],
+      "inputs": [
+        "min_raw_h/2mass-atlas-000121s-h0760009.fits",
+        "min_raw_h/2mass-atlas-000121s-h0760021.fits",
+        "min_raw_h/2mass-atlas-000121s-h0760033.fits",
+        "min_raw_h/2mass-atlas-000121s-h0760044.fits",
+        "min_raw_h/2mass-atlas-000121s-h0760056.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770209.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770221.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770233.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770245.fits",
+        "min_raw_h/2mass-atlas-000121s-h0770256.fits",
+        "region.hdr",
+        "rimages_h.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl projected_h pimages_h.tbl",
+      "outputs": [
+        "pimages_h.tbl"
+      ],
+      "inputs": [
+        "projected_h/hdu0_2mass-atlas-000121s-h0760009.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760021.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760033.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760044.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760056.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770209.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770221.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770233.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770245.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mOverlaps pimages_h.tbl diffs_h.tbl",
+      "outputs": [
+        "diffs_h.tbl"
+      ],
+      "inputs": [
+        "pimages_h.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mDiffFitExec -p projected_h diffs_h.tbl region.hdr diffs_h fits_h.tbl",
+      "outputs": [
+        "fits_h.tbl"
+      ],
+      "inputs": [
+        "diffs_h.tbl",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760009.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760009_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760021.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760021_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760033.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760033_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760044.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760044_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760056.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760056_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770209.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770209_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770221.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770221_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770233.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770233_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770245.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770245_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770256.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770256_area.fits",
+        "region.hdr"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mBgModel pimages_h.tbl fits_h.tbl corrections_h.tbl",
+      "outputs": [
+        "corrections_h.tbl"
+      ],
+      "inputs": [
+        "fits_h.tbl",
+        "pimages_h.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mBgExec -p projected_h pimages_h.tbl corrections_h.tbl corrected_h",
+      "outputs": [
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760009.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760009_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760021.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760021_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760033.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760033_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760044.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760044_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760056.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760056_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770209.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770209_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770221.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770221_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770233.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770233_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770245.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770245_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770256.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770256_area.fits"
+      ],
+      "inputs": [
+        "corrections_h.tbl",
+        "pimages_h.tbl",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760009.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760009_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760021.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760021_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760033.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760033_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760044.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760044_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760056.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0760056_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770209.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770209_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770221.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770221_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770233.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770233_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770245.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770245_area.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770256.fits",
+        "projected_h/hdu0_2mass-atlas-000121s-h0770256_area.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl corrected_h cimages_h.tbl",
+      "outputs": [
+        "cimages_h.tbl"
+      ],
+      "inputs": [
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760009.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760021.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760033.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760044.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760056.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770209.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770221.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770233.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770245.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mAdd -p corrected_h cimages_h.tbl region.hdr hband.fits",
+      "outputs": [
+        "hband.fits"
+      ],
+      "inputs": [
+        "cimages_h.tbl",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760009.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760009_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760021.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760021_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760033.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760033_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760044.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760044_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760056.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0760056_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770209.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770209_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770221.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770221_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770233.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770233_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770245.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770245_area.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770256.fits",
+        "corrected_h/hdu0_2mass-atlas-000121s-h0770256_area.fits",
+        "region.hdr"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl min_raw_k rimages_k.tbl",
+      "outputs": [
+        "rimages_k.tbl"
+      ],
+      "inputs": [
+        "min_raw_k/2mass-atlas-000121s-k0760009.fits",
+        "min_raw_k/2mass-atlas-000121s-k0760021.fits",
+        "min_raw_k/2mass-atlas-000121s-k0760033.fits",
+        "min_raw_k/2mass-atlas-000121s-k0760044.fits",
+        "min_raw_k/2mass-atlas-000121s-k0760056.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770209.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770221.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770233.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770245.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mProjExec -q -p min_raw_k rimages_k.tbl region.hdr projected_k stats.tbl",
+      "outputs": [
+        "projected_k/hdu0_2mass-atlas-000121s-k0760009.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760009_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760021.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760021_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760033.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760033_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760044.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760044_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760056.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760056_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770209.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770209_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770221.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770221_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770233.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770233_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770245.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770245_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770256.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770256_area.fits"
+      ],
+      "inputs": [
+        "min_raw_k/2mass-atlas-000121s-k0760009.fits",
+        "min_raw_k/2mass-atlas-000121s-k0760021.fits",
+        "min_raw_k/2mass-atlas-000121s-k0760033.fits",
+        "min_raw_k/2mass-atlas-000121s-k0760044.fits",
+        "min_raw_k/2mass-atlas-000121s-k0760056.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770209.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770221.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770233.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770245.fits",
+        "min_raw_k/2mass-atlas-000121s-k0770256.fits",
+        "region.hdr",
+        "rimages_k.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl projected_k pimages_k.tbl",
+      "outputs": [
+        "pimages_k.tbl"
+      ],
+      "inputs": [
+        "projected_k/hdu0_2mass-atlas-000121s-k0760009.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760021.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760033.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760044.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760056.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770209.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770221.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770233.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770245.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mOverlaps pimages_k.tbl diffs_k.tbl",
+      "outputs": [
+        "diffs_k.tbl"
+      ],
+      "inputs": [
+        "pimages_k.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mDiffFitExec -p projected_k diffs_k.tbl region.hdr diffs_k fits_k.tbl",
+      "outputs": [
+        "fits_k.tbl"
+      ],
+      "inputs": [
+        "diffs_k.tbl",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760009.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760009_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760021.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760021_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760033.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760033_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760044.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760044_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760056.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760056_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770209.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770209_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770221.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770221_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770233.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770233_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770245.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770245_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770256.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770256_area.fits",
+        "region.hdr"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mBgModel pimages_k.tbl fits_k.tbl corrections_k.tbl",
+      "outputs": [
+        "corrections_k.tbl"
+      ],
+      "inputs": [
+        "fits_k.tbl",
+        "pimages_k.tbl"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mBgExec -p projected_k pimages_k.tbl corrections_k.tbl corrected_k",
+      "outputs": [
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760009.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760009_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760021.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760021_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760033.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760033_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760044.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760044_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760056.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760056_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770209.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770209_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770221.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770221_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770233.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770233_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770245.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770245_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770256.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770256_area.fits"
+      ],
+      "inputs": [
+        "corrections_k.tbl",
+        "pimages_k.tbl",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760009.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760009_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760021.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760021_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760033.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760033_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760044.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760044_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760056.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0760056_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770209.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770209_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770221.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770221_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770233.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770233_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770245.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770245_area.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770256.fits",
+        "projected_k/hdu0_2mass-atlas-000121s-k0770256_area.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mImgtbl corrected_k cimages_k.tbl",
+      "outputs": [
+        "cimages_k.tbl"
+      ],
+      "inputs": [
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760009.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760021.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760033.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760044.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760056.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770209.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770221.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770233.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770245.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770256.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mAdd -p corrected_k cimages_k.tbl region.hdr kband.fits",
+      "outputs": [
+        "kband.fits"
+      ],
+      "inputs": [
+        "cimages_k.tbl",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760009.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760009_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760021.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760021_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760033.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760033_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760044.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760044_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760056.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0760056_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770209.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770209_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770221.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770221_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770233.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770233_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770245.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770245_area.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770256.fits",
+        "corrected_k/hdu0_2mass-atlas-000121s-k0770256_area.fits",
+        "region.hdr"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mShrink kband.fits ksmall.fits 5",
+      "outputs": [
+        "ksmall.fits"
+      ],
+      "inputs": [
+        "kband.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mShrink hband.fits hsmall.fits 5",
+      "outputs": [
+        "hsmall.fits"
+      ],
+      "inputs": [
+        "hband.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mShrink jband.fits jsmall.fits 5",
+      "outputs": [
+        "jsmall.fits"
+      ],
+      "inputs": [
+        "jband.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mViewer -t 2 -red ksmall.fits 0s max gaussian-log -green hsmall.fits 0s max gaussian-log -blue jsmall.fits 0s max gaussian-log -out color_mosaic.png",
+      "outputs": [],
+      "inputs": [
+        "hsmall.fits",
+        "jsmall.fits",
+        "ksmall.fits"
+      ]
+    },
+    {
+      "command": "/home/scuzee/Montage/bin/mViewer -ct 1 -gray jsmall.fits -2s max gaussian-log -out mosaic.png",
+      "outputs": [],
+      "inputs": [
+        "jsmall.fits"
+      ]
+    }
+  ]
+}
