@@ -1,7 +1,7 @@
 {
   "define" : {
     "step": 100,
-    "num_individuals": 12,
+    "num_individuals": 3,
     "chr_num":1,
     "CHR_FILE": format("ALL.chr%d.250000.vcf", chr_num)
   },
@@ -18,7 +18,7 @@
       ]
     } for x in range(1, num_individuals*step, step),
     {
-      "command": "bin/individuals_merge.py 1 chr1n-201-401.tar.gz",
+      "command": format("bin/individuals_merge.py 1 %s", join([format("chr1n-%d-%d.tar.gz", x, x + step) for x in range(1, num_individuals*step, step)])),
       "outputs": [
         "chr1n.tar.gz"
       ],
@@ -40,7 +40,6 @@
       "command": "bin/mutation_overlap.py -c 1 -pop EAS",
       "outputs": [],
       "inputs": [
-        "../../.cache/matplotlib/fontlist-v330.json",
         "EAS",
         "bin/mutation_overlap.py",
         "chr1n.tar.gz",
