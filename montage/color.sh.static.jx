@@ -2695,7 +2695,9 @@
     },
     {
       "command": "/home/scuzee/Montage/bin/mAdd -p corrected_j cimages.tbl region.hdr jband.fits",
-      "outputs": [],
+      "outputs": [
+	"jband.fits"
+		],
       "inputs": [
         "cimages.tbl",
         "corrected_j/hdu0_2mass-atlas-000121s-j0760009.fits",
@@ -3147,12 +3149,12 @@
       ]
     },
     {
-      "command": "/home/scuzee/Montage/bin/mViewer -ct 1 -gray ksmall.fits -2s max gaussian-log -out mosaic.png",
+      "command": "/home/scuzee/Montage/bin/mViewer -ct 1 -gray jsmall.fits -2s max gaussian-log -out mosaic.png",
       "outputs": [
         "mosaic.png"
         ],
       "inputs": [
-        "ksmall.fits"
+        "jsmall.fits"
       ]
     }
   ]
