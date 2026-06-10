@@ -50,6 +50,16 @@ if __name__ == "__main__":
     m.set_name(args.name)
 
 
+    m.tune("wait-for-workers", 5)
+
+    eas = m.declare_file("EAS")
+    columns = m.declare_file("columns.txt")
+    individuals_exec = m.declare_file("bin/individuals.py")
+    individuals_merge_exec = m.declare_file("bin/individuals_merge.py")
+    sifting_exec = m.declare_file("bin/sifting.py")
+    mut_overlap_exec = m.declare_file("bin/mutation_overlap.py")
+    frequency_exec = m.declare_file("bin/frequency.py")
+
     for chr_num in range(1, args.num_chr + 1):
 
         chr_file_str = f"ALL.chr{chr_num}.250000.vcf"
@@ -57,13 +67,6 @@ if __name__ == "__main__":
 
         chr_file = m.declare_file(chr_file_str)
         sift_file = m.declare_file(sift_file_str)
-        columns = m.declare_file("columns.txt")
-
-        individuals_exec = m.declare_file("bin/individuals.py")
-        individuals_merge_exec = m.declare_file("bin/individuals_merge.py")
-        sifting_exec = m.declare_file("bin/sifting.py")
-        mut_overlap_exec = m.declare_file("bin/mutation_overlap.py")
-        frequency_exec = m.declare_file("bin/frequency.py")
 
         individuals_outputs = []
 
@@ -71,7 +74,7 @@ if __name__ == "__main__":
             output_file = m.declare_file(f"chr{chr_num}n-{i}-{i+100}.tar.gz")
 
             t = vine.Task(
-                command=f"./individuals.py {chr_file_str} 1 {i} {i+100} 6000",
+                command=f"./individuals.py {chr_file_str} {chr_num} {i} {i+100} 6000",
                 inputs= {
                     chr_file: {"remote_name" : chr_file_str},
                     individuals_exec: {"remote_name" : "individuals.py"},
@@ -88,7 +91,7 @@ if __name__ == "__main__":
 
         merge_output = m.declare_file(f"chr{chr_num}n.tar.gz")
         merge = vine.Task(
-            command=f"./individuals_merge.py 1 {' '.join([o.source() for o in individuals_outputs])}",
+            command=f"./individuals_merge.py {chr_num} {' '.join([o.source() for o in individuals_outputs])}",
             inputs={o: {"remote_name" : o.source()} for o in individuals_outputs} | {individuals_merge_exec: {"remote_name" : "individuals_merge.py"}},
             outputs={merge_output: {"remote_name" : f"chr{chr_num}n.tar.gz"}}
         )
@@ -96,21 +99,20 @@ if __name__ == "__main__":
 
         sift_output = m.declare_file(f"sifted.SIFT.chr{chr_num}.txt")
         sift = vine.Task(
-            command=f"./sifting.py {sift_file_str} 1",
+            command=f"./sifting.py {sift_file_str} {chr_num}",
             inputs={
                 sift_file: {"remote_name" : sift_file_str},
                 sifting_exec: {"remote_name" : "sifting.py"},
             },
             outputs={
-                sift_output: {"remote_name" : "sifted.SIFT.chr1.txt"},
+                sift_output: {"remote_name" : f"sifted.SIFT.chr{chr_num}.txt"},
             }
         )
         m.submit(sift)
 
-        eas = m.declare_file("EAS")
         mut_output = m.declare_file(f"chr{chr_num}-EAS")
         mutation = vine.Task(
-            command=f"./mutation_overlap.py -c 1 -pop EAS",
+            command=f"./mutation_overlap.py -c {chr_num} -pop EAS",
             inputs={
                 merge_output: {"remote_name" : merge_output.source()},
                 sift_output: {"remote_name" : sift_output.source()},
@@ -125,7 +127,7 @@ if __name__ == "__main__":
 
         frequency_output = m.declare_file(f"chr{chr_num}-EAS-freq")
         frequency = vine.Task(
-            command=f"./frequency.py -c 1 -pop EAS",
+            command=f"./frequency.py -c {chr_num} -pop EAS",
             inputs={
                 eas: {"remote_name" : "EAS"},
                 merge_output: {"remote_name" : merge_output.source()},
