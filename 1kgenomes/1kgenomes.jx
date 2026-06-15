@@ -1,13 +1,13 @@
 {
+  # chr_num is defined in parent workflow
   "define" : {
     "step": 100,
     "num_individuals": 3,
-    "chr_num":1,
     "CHR_FILE": format("ALL.chr%d.250000.vcf", chr_num)
   },
   "rules": [
     {
-      "command": format("bin/individuals.py %s 1 %d %d 6000", CHR_FILE, x, x+step),
+      "command": format("bin/individuals.py %s %d %d %d 6000", CHR_FILE, chr_num, x, x+step),
       "outputs": [
         format("chr%dn-%d-%d.tar.gz", chr_num, x, x+step)
       ],
@@ -18,7 +18,7 @@
       ]
     } for x in range(1, num_individuals*step, step),
     {
-      "command": format("bin/individuals_merge.py 1 %s", join([format("chr1n-%d-%d.tar.gz", x, x + step) for x in range(1, num_individuals*step, step)])),
+      "command": format("bin/individuals_merge.py %d %s", chr_num, join([format("chr1n-%d-%d.tar.gz", x, x + step) for x in range(1, num_individuals*step, step)])),
       "outputs": [
         "chr1n.tar.gz"
       ],
@@ -27,35 +27,35 @@
         [format("chr1n-%d-%d.tar.gz", x, x + step) for x in range(1, num_individuals*step, step)]
     },
     {
-      "command": "bin/sifting.py ALL.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf 1",
+      "command": format("bin/sifting.py ALL.chr%d.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf %d", chr_num, chr_num),
       "outputs": [
-        "sifted.SIFT.chr1.txt"
+        format("sifted.SIFT.chr%d.txt", chr_num)
       ],
       "inputs": [
-        "ALL.chr1.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf",
+        format("ALL.chr%d.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf", chr_num),
         "bin/sifting.py"
       ]
     },
     {
-      "command": "bin/mutation_overlap.py -c 1 -pop EAS",
-      "outputs": ["chr1-EAS"],
+      "command": format("bin/mutation_overlap.py -c %d -pop EAS", chr_num),
+      "outputs": [format("chr%d-EAS",chr_num)],
       "inputs": [
         "EAS",
         "bin/mutation_overlap.py",
-        "chr1n.tar.gz",
+        format("chr%dn.tar.gz",chr_num),
         "columns.txt",
-        "sifted.SIFT.chr1.txt"
+        format("sifted.SIFT.chr%d.txt",chr_num)
       ]
     },
     {
-      "command": "bin/frequency.py -c 1 -pop EAS",
-      "outputs": ["chr1-EAS-freq"],
+      "command": format("bin/frequency.py -c %d -pop EAS", chr_num),
+      "outputs": [format("chr%d-EAS-freq", chr_num)],
       "inputs": [
         "EAS",
         "bin/frequency.py",
-        "chr1n.tar.gz",
+        format("chr%dn.tar.gz",chr_num),
         "columns.txt",
-        "sifted.SIFT.chr1.txt"
+        format("sifted.SIFT.chr%d.txt",chr_num)
       ]
     }
   ]

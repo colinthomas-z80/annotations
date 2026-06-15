@@ -1,13 +1,18 @@
 {
     "define" : {
-        "num_chr" : 3
+        "num_chr" : 5
     },
     "rules" : [
         {
-            "workflow" : "1kgenomes.sh.jx",
+            "workflow" : "1kgenomes.jx",
             "args" : {"chr_num" : x },
-            "inputs" : [format("f%d", x)],
-            "outputs" : [template("output{x}_{y}") for y in range(5)] 
-        } for x in range(1, num_chr)
+	    "inputs": [ format("ALL.chr%d.250000.vcf", x), 
+			format("ALL.chr%d.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf", x)
+			],
+	    "outputs": [
+			format("chr%d-EAS", x),
+			format("chr%d-EAS-freq", x)
+			]
+        } for x in range(1, num_chr+1)
     ]
 }
