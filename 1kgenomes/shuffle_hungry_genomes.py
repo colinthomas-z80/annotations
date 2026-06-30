@@ -26,7 +26,7 @@ if __name__ == "__main__":
         nargs="?",
         type=int,
         help="number of individuals tasks to split the input",
-	    default=3
+	    default=10
     )
 
     parser.add_argument(
@@ -54,6 +54,9 @@ if __name__ == "__main__":
     #m.tune("reset-sched-cursor", 1)
     #m.tune("attempt-schedule-depth", args.schedule_depth)
     #m.tune("max-retrievals", 0)
+
+    m.tune("hungry-minimum-factor", 1)
+    m.tune("hungry-minimum", 2)
 
     eas = m.declare_file("EAS")
     columns = m.declare_file("columns.txt")
@@ -180,20 +183,21 @@ if __name__ == "__main__":
         subgraph_priority -= 10
         all_tasks.append(chr_tasks)
 
-    import itertools
+    top_ordering = []
+    for l in all_tasks:
+        top_ordering += l
+    
 
-    top_ordering = None
-
-    for c in all_tasks:
-        if not top_ordering:
-            top_ordering = c
-        elif len(top_ordering) < 2 * len(c):
-            top_ordering += c
-        else:
-            shuffle_component = top_ordering[-len(c):]
-            top_ordering = top_ordering[:-len(c)] + list(itertools.chain.from_iterable(zip(shuffle_component,c)))
-
-
+#
+#    for c in all_tasks:
+#        if not top_ordering:
+#            top_ordering = c
+#        elif len(top_ordering) < 2 * len(c):
+#            top_ordering += c
+#        else:
+#            shuffle_component = top_ordering[-len(c):]
+#            top_ordering = top_ordering[:-len(c)] + list(itertools.chain.from_iterable(zip(shuffle_component,c)))
+    
     for t in top_ordering:
         print(t.command)
 

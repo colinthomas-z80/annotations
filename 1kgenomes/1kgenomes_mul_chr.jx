@@ -1,6 +1,6 @@
 {
     "define" : {
-        "num_chr" : 5
+        "num_chr" : 10
     },
     "rules" : [
         {

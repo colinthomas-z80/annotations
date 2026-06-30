@@ -26,7 +26,7 @@ if __name__ == "__main__":
         nargs="?",
         type=int,
         help="number of individuals tasks to split the input",
-	    default=3
+	    default=10
     )
 
     parser.add_argument(
@@ -54,6 +54,8 @@ if __name__ == "__main__":
     #m.tune("reset-sched-cursor", 1)
     #m.tune("attempt-schedule-depth", args.schedule_depth)
     #m.tune("max-retrievals", 0)
+
+    m.tune("hungry-minimum-factor", 3)
 
     eas = m.declare_file("EAS")
     columns = m.declare_file("columns.txt")
@@ -185,10 +187,10 @@ if __name__ == "__main__":
 
         subgraph_priority -= 10
 
-    for i in range(5):
-        indiv_tasks.append(merge_tasks.pop(0))
-        sift_tasks.append(mut_tasks.pop(0))
-        merge_tasks.append(freq_tasks.pop(0))
+    for i in range(7):
+        indiv_tasks.insert(0, merge_tasks.pop(0))
+        sift_tasks.insert(0, mut_tasks.pop(0))
+        merge_tasks.insert(0,freq_tasks.pop(0))
 
     top_ordering = indiv_tasks + sift_tasks + merge_tasks + mut_tasks + freq_tasks
 

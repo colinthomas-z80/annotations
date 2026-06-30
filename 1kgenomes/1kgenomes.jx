@@ -1,31 +1,41 @@
 {
-  # chr_num is defined in parent workflow
   "define" : {
     "step": 100,
     "num_individuals": 3,
-    "CHR_FILE": format("ALL.chr%d.250000.vcf", chr_num)
+    "CHR_RANGE": range(1,11)
   },
   "rules": [
+    
+    # individuals task
     {
-      "command": format("bin/individuals.py %s %d %d %d 6000", CHR_FILE, chr_num, x, x+step),
+      "command": format("bin/individuals.py /groups/dthain/users/cthoma26/annotations/1kgenomes/$CHR_FILE %d %d %d 6000", chr_num, x, x+step),
       "outputs": [
         format("chr%dn-%d-%d.tar.gz", chr_num, x, x+step)
       ],
       "inputs": [
-        format("ALL.chr%d.250000.vcf", chr_num),
+#        format("ALL.chr%d.250000.vcf", chr_num),
         "bin/individuals.py",
         "columns.txt"
-      ]
-    } for x in range(1, num_individuals*step, step),
+      ],
+      "environment": {		
+        "CHR_FILE" : format("ALL.chr%d.250000.vcf", chr_num),
+      },
+    } for chr_num in CHR_RANGE for x in range(1, num_individuals*step, step),
+    
+
+    # merge task
     {
-      "command": format("bin/individuals_merge.py %d %s", chr_num, join([format("chr1n-%d-%d.tar.gz", x, x + step) for x in range(1, num_individuals*step, step)])),
+      "command": format("bin/individuals_merge.py %d %s", chr_num, join([format("chr%dn-%d-%d.tar.gz", chr_num, x, x + step) for x in range(1, num_individuals*step, step)])),
       "outputs": [
-        "chr1n.tar.gz"
+        format("chr%dn.tar.gz", chr_num)
       ],
       "inputs": [
         "bin/individuals_merge.py" ] +
-        [format("chr1n-%d-%d.tar.gz", x, x + step) for x in range(1, num_individuals*step, step)]
-    },
+        [format("chr%dn-%d-%d.tar.gz", chr_num, x, x + step) for x in range(1, num_individuals*step, step)]
+    } for chr_num in CHR_RANGE,
+
+
+    # sift task
     {
       "command": format("bin/sifting.py ALL.chr%d.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf %d", chr_num, chr_num),
       "outputs": [
@@ -35,7 +45,10 @@
         format("ALL.chr%d.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf", chr_num),
         "bin/sifting.py"
       ]
-    },
+    } for chr_num in CHR_RANGE,
+
+
+    # mutations task
     {
       "command": format("bin/mutation_overlap.py -c %d -pop EAS", chr_num),
       "outputs": [format("chr%d-EAS",chr_num)],
@@ -46,7 +59,10 @@
         "columns.txt",
         format("sifted.SIFT.chr%d.txt",chr_num)
       ]
-    },
+    } for chr_num in CHR_RANGE,
+
+
+    # frequency task
     {
       "command": format("bin/frequency.py -c %d -pop EAS", chr_num),
       "outputs": [format("chr%d-EAS-freq", chr_num)],
@@ -57,6 +73,6 @@
         "columns.txt",
         format("sifted.SIFT.chr%d.txt",chr_num)
       ]
-    }
+    } for chr_num in CHR_RANGE,
   ]
 }
