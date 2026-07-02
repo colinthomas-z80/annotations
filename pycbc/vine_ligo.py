@@ -26,7 +26,7 @@ def make_inference_job(m, coinc_f, coincident_events_file):
 
         output = m.declare_file(f"inference_{data_file_number}_{chunk_number}_{segment}.hdf")
         t = vine.Task(
-            command = (f"/bin/bash -c 'source /home/scuzee/Programming/annotations/pycbc/env/bin/activate' ;"
+            command = (f"/bin/bash -c 'source /groups/dthain/users/cthoma26/annotations/pycbc/env/bin/activate' ;"
                 f"./{run_script.source().split('/')[-1]}"),
             inputs = {
                     sampler_ini: {"remote_name": "emcee.ini"},
@@ -61,7 +61,7 @@ def main():
     coincidence = m.declare_file("coincidence.py")
     inference = m.declare_file("make_inference.py")
 
-    pycbc_virtualenv = "env"
+    pycbc_virtualenv = "/groups/dthain/users/cthoma26/annotations/pycbc/env"
 
     match_outputs = []
 
