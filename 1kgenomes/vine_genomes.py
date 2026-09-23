@@ -44,14 +44,6 @@ if __name__ == "__main__":
         default=9123,
     )
 
-    parser.add_argument(
-        "--schedule-depth",
-        nargs="?",
-        type=int,
-        help="depth of ready list to consider each pass",
-        default=100,
-    )
-
     args = parser.parse_args()
 
     m = vine.Manager(port=args.port)
@@ -59,9 +51,9 @@ if __name__ == "__main__":
     
 
     m.tune("wait-for-workers", 5)
-    m.tune("reset-sched-cursor", 1)
-    m.tune("attempt-schedule-depth", args.schedule_depth)
-    m.tune("max-retrievals", 0)
+#    m.tune("hungry-internal", 1)
+ #   m.tune("hungry-minimum-factor",1)
+  #  m.tune("hungry-minimum", 3)
 
     eas = m.declare_file("EAS")
     columns = m.declare_file("columns.txt")
@@ -72,6 +64,8 @@ if __name__ == "__main__":
     frequency_exec = m.declare_file("bin/frequency.py")
     
     subgraph_priority = 1
+
+    cat_arr=['aaa', 'bbb', 'ccc', 'ddd', 'eee', 'fff', 'ggg', 'hhh', 'iii', 'jjj', 'kkk', 'lll']
 
     for chr_num in range(1, args.num_chr + 1):
 
@@ -96,11 +90,10 @@ if __name__ == "__main__":
                 outputs = {
                     output_file: {"remote_name" : f"chr{chr_num}n-{i}-{i+100}.tar.gz"},
                 },
-                priority=subgraph_priority,
-                #category=f"{chr_num}",
+                #semantic_category=cat_arr[chr_num],
                 memory=1000,
                 disk=5000,
-                cores=4
+                cores=6
             )
             t.worker_selection_algorithm = 2
             individuals_outputs.append(output_file)
@@ -110,15 +103,13 @@ if __name__ == "__main__":
 
         merge_output = m.declare_temp() #m.declare_temp(f"chr{chr_num}n.tar.gz")
         merge = vine.Task(
-            command=f"./individuals_merge.py {chr_num} {' '.join([f"chr{chr_num}n-{i}-{i+100}.tar.gz" for i, o in enumerate(individuals_outputs)])}",
+            command=f"./individuals_merge.py {chr_num} {' '.join([f'chr{chr_num}n-{i}-{i+100}.tar.gz' for i, o in enumerate(individuals_outputs)])}",
             inputs={o: {"remote_name" : f"chr{chr_num}n-{i}-{i+100}.tar.gz"} for i, o in enumerate(individuals_outputs)} | {individuals_merge_exec: {"remote_name" : "individuals_merge.py"}},
             outputs={merge_output: {"remote_name" : f"chr{chr_num}n.tar.gz"}},
-            #category=f"{chr_num}",
+            #semantic_category=cat_arr[chr_num],
             disk=5000,
-            priority=subgraph_priority,
             cores=12
         )
-        merge.worker_selection_algorithm = 2
         m.submit(merge)
 
         sift_output = m.declare_temp() # m.declare_temp(f"sifted.SIFT.chr{chr_num}.txt")
@@ -131,11 +122,9 @@ if __name__ == "__main__":
             outputs={
                 sift_output: {"remote_name" : f"sifted.SIFT.chr{chr_num}.txt"},
             },
-            priority=subgraph_priority,
-            #category=f"{chr_num}",
+            #semantic_category=cat_arr[chr_num],
             cores=12,
         )
-        sift.worker_selection_algorithm = 2
         m.submit(sift)
 
         mut_output = m.declare_file(f"chr{chr_num}-EAS")
@@ -150,11 +139,9 @@ if __name__ == "__main__":
             outputs={
                 mut_output: {"remote_name" : mut_output.source(), "failure_only" : True},
             },
-            priority=subgraph_priority,
-            #category=f"{chr_num}",
+            #semantic_category=cat_arr[chr_num],
             cores=12
         )
-        mutation.worker_selection_algorithm = 2
         m.submit(mutation)
 
         frequency_output = m.declare_file(f"chr{chr_num}-EAS-freq")
@@ -170,11 +157,9 @@ if __name__ == "__main__":
             outputs={
                 frequency_output: {"remote_name" : frequency_output.source(), "failure_only" : True},
             },
-            priority=subgraph_priority,
-            #category=f"{chr_num}",
+            #semantic_category=cat_arr[chr_num],
             cores=12,
         )
-        frequency.worker_selection_algorithm = 2
         m.submit(frequency)
 
         subgraph_priority += 100

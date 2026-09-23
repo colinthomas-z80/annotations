@@ -19,14 +19,19 @@ def make_inference_job(m, coinc_f, coincident_events_file):
     l1_data = m.declare_file(f"data/L1_strain_{data_file_number}.gwf")
     sampler_ini = m.declare_file("inference/emcee.ini")
     priors_ini = m.declare_file("inference/gw150914_like.ini")
+    
+    inference_outputs = []
+    inference_outnames = []
     for segment, (data_config_path, run_script_path) in enumerate(deps):
         run_script = m.declare_file(run_script_path)
         print(run_script.source())
         data_config = m.declare_file(data_config_path)
 
-        output = m.declare_file(f"inference_{data_file_number}_{chunk_number}_{segment}.hdf")
+        output = m.declare_temp()#declare_file(f"inference_{data_file_number}_{chunk_number}_{segment}.hdf")
+        inference_outputs.append(output)
+        inference_outnames.append(f"inference_{data_file_number}_{chunk_number}_{segment}.hdf")
         t = vine.Task(
-            command = (f"/bin/bash -c 'source /groups/dthain/users/cthoma26/annotations/pycbc/env/bin/activate' ;"
+            command = (f"source ~/.bashrc; source /groups/dthain/users/cthoma26/annotations/pycbc/env/bin/activate ;"
                 f"./{run_script.source().split('/')[-1]}"),
             inputs = {
                     sampler_ini: {"remote_name": "emcee.ini"},
@@ -37,9 +42,24 @@ def make_inference_job(m, coinc_f, coincident_events_file):
                     l1_data: {"remote_name": f"L1_strain_{data_file_number}.gwf"},
                     coinc_f: {"remote_name": coincident_events_file.split('/')[-1]}
                 },
+            cores=8,
             outputs = {output: {"remote_name": f"inference_{data_file_number}_{chunk_number}_{segment}.hdf"}}
         )
         m.submit(t)
+    
+    if len(inference_outputs):
+        collect_inferences = vine.Task(
+                command = (f"{env_get}"
+                    f"ls *.hdf | while read f; do cat $f >> collected_inferences_{data_file_number}_{chunk_number}; done;"),
+                    inputs = {
+                        i:{"remote_name":inference_outnames[n]} for n,i in enumerate(inference_outputs)
+                        },
+                    outputs = { 
+                        m.declare_file(f"collected_inferences_{data_file_number}_{chunk_number}") : {"remote_name":f"collected_inferences_{data_file_number}_{chunk_number}"}
+                        },
+                    cores=4,
+                )
+        m.submit(collect_inferences)
 
 def main():
     parser = argparse.ArgumentParser(description="TaskVine Gravitational Wave Analysis")
@@ -57,57 +77,68 @@ def main():
 
     m = vine.Manager(port=9129)
 
+    m.tune("wait-for-workers",5)
+
     match_strain = m.declare_file("match_strain.py")
     coincidence = m.declare_file("coincidence.py")
     inference = m.declare_file("make_inference.py")
 
     pycbc_virtualenv = "/groups/dthain/users/cthoma26/annotations/pycbc/env"
 
-    match_outputs = []
+    match_outputs = {}
 
     for data_file in data_files:
         data_path = os.path.join(args.data_dir, data_file)
         input_file = m.declare_file(data_path)
+
         template_start, template_end = map(int, args.match_template_range.split('-'))
-        templates = np.arange(template_start, template_end, args.template_step)
+        templates = np.arange(template_start, template_end, args.template_split)
         template_chunks = [templates[i:i + args.template_split] for i in range(0, len(templates), args.template_split)]
 
         for chunk_id, template_chunk in enumerate(template_chunks):
-            output_file = m.declare_file(f"{data_file}_match_{chunk_id}.csv")
+            output_file = m.declare_temp()
             t = vine.Task(
-                command = (f"/bin/bash -c 'source {pycbc_virtualenv}/bin/activate' ;"
+                command = (f"source ~/.bashrc; source {pycbc_virtualenv}/bin/activate ;"
                     "python match_strain.py " 
                     f" --input-file {data_file.split('/')[-1]} " 
                     f" --channel {data_file.split('_')[0]} " 
-                    f" --template-range {int(template_chunk[0])}-{int(template_chunk[-1])} " 
+                    f" --template-range {int(template_chunk[0])}-{(int(template_chunk[-1]) + 1)} " 
                     f" --template-step {args.template_step} " 
-                    f" --output-file {output_file.source()}"
+                    f" --output-file {data_file.split('.')[0]}_match_{chunk_id}.csv"
                     ),
                 inputs = {match_strain : {"remote_name": "match_strain.py"}, input_file: {"remote_name": data_file.split('/')[-1]}},
-                outputs={output_file: {"remote_name": f"{data_file}_match_{chunk_id}.csv"}}
+                outputs={output_file: {"remote_name": f"{data_file.split('.')[0]}_match_{chunk_id}.csv"}},
+                cores=4,
             )
-            match_outputs.append(output_file)
+            
+            if data_file in match_outputs.keys():
+                match_outputs[data_file] += [output_file]
+            else:
+                match_outputs[data_file] = [output_file]
+            
             m.submit(t)
 
     coincident_outputs = []
     for data_file in data_files:
         for chunk_id, template_chunk in enumerate(template_chunks):
             if data_file.split('_')[0] == "L1":
-                #l1_trig_file = m.declare_file(f"{data_file}_match_{chunk_id}.csv")
-                #h1_trig_file = m.declare_file(f"{data_file.replace('L1', 'H1')}_match_{chunk_id}.csv")
-                l1_trig_file = [o for o in match_outputs if o.source().endswith(f"{data_file}_match_{chunk_id}.csv")][0]
-                h1_trig_file = [o for o in match_outputs if o.source().endswith(f"{data_file.replace('L1', 'H1')}_match_{chunk_id}.csv")][0]
-                coincident_output_file = m.declare_file(f"{data_file[3:]}_{chunk_id}_coincident_events.csv")
+                l1_trig_file = match_outputs[data_file][chunk_id]
+                l1_src = f"{data_file.split('.')[0]}_match_{chunk_id}.csv"
+                h1_src = "H1" + l1_src[2:]
+                h1_data = "H1" + data_file[2:]
+                h1_trig_file = match_outputs[h1_data][chunk_id]
+                coincident_output_file = m.declare_file(f"{data_file[3:].split('.')[0]}_{chunk_id}_coincident_events.csv")
 
                 t_coincidence = vine.Task(
-                    command = (f"/bin/bash -c 'source {pycbc_virtualenv}/bin/activate' ;"
+                    command = (f"source ~/.bashrc; source {pycbc_virtualenv}/bin/activate ;"
                         "python coincidence.py "
-                        f" --h1-trig {h1_trig_file.source()}"
-                        f" --l1-trig {l1_trig_file.source()}"
+                        f" --h1-trig {h1_src}"
+                        f" --l1-trig {l1_src}"
                         f" --output-file {coincident_output_file.source()}"
                     ),
-                    inputs = {coincidence: {"remote_name": "coincidence.py"}, h1_trig_file: {"remote_name": h1_trig_file.source()}, l1_trig_file: {"remote_name": l1_trig_file.source()}},
-                    outputs={coincident_output_file: {"remote_name": coincident_output_file.source()}}
+                    inputs = {coincidence: {"remote_name": "coincidence.py"}, h1_trig_file: {"remote_name": h1_src}, l1_trig_file: {"remote_name": l1_src}},
+                    outputs={coincident_output_file: {"remote_name": coincident_output_file.source()}},
+                    cores=1,
                 )
                 coincident_outputs.append(coincident_output_file)
                 m.submit(t_coincidence)

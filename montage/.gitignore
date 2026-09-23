@@ -1,1 +1,4 @@
 raw_*
+min_raw*
+*.fits
+*.tbl

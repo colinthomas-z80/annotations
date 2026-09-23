@@ -44,7 +44,7 @@ pad-data = 0
         
         # """
 
-        nprocs = 4
+        nprocs = 8
         run_script = f'''
 #!/bin/bash
 OMP_NUM_THREADS=1 \
@@ -91,24 +91,28 @@ def main():
                 templates.append((m1, m2))
 
     coincidents = list(csv.DictReader(open(args.coincident_events)))
+    data_file_number = args.coincident_events.split('_')[1][0]
 
     base = 1126259400
     segment_id = 0
     for event in coincidents:
+        # do not process events outside of base time
+        if int(float(event["h1_peak_time"])) < base:
+            continue
         #print("Mass H1: ", templates[int(event["h1_template"])], "Mass L1: ", templates[int(event["l1_template"])])
 
         data_config = f"""[data]
         instruments = H1 L1
-        trigger-time = {event["h1_peak_time"]}
-        analysis-start-time = {float(event["h1_peak_time"])%10}
-        analysis-end-time = {float(event["h1_peak_time"])%10 + 10}
+        trigger-time = {int(float(event["h1_peak_time"]))}
+        analysis-start-time = -1
+        analysis-end-time = 1
         psd-estimation = median-mean
-        psd-start-time = -10
-        psd-end-time = 10
-        psd-inverse-length = 8
-        psd-segment-length = 2
+        psd-start-time = -1
+        psd-end-time = 1
+        psd-inverse-length = 2
+        psd-segment-length = 1
         psd-segment-stride = 1
-        frame-files = H1:H1_strain_{segment_id}.gwf L1:L1_strain_{segment_id}.gwf
+        frame-files = H1:H1_strain_{data_file_number}.gwf L1:L1_strain_{data_file_number}.gwf
         channel-name = H1:Strain L1:Strain
         sample-rate = 2048
         strain-high-pass = 15
@@ -126,7 +130,7 @@ def main():
         OMP_NUM_THREADS=1 \
         pycbc_inference --verbose \
             --seed 1897234 \
-            --config-file gw150914_like.ini data_{segment_id}.ini emcee.ini \
+            --config-file gw150914_like.ini data_{args.name_pattern}_{segment_id}.ini emcee.ini \
             --output-file inference_{segment_id}.hdf \
             --nprocesses {nprocs} \
             --force

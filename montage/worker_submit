@@ -1,0 +1,6 @@
+#!/bin/bash
+
+vine_submit_workers -d all -T condor --cores 12 --memory 16000 --disk 25000 -E --single-shot $HOSTNAME 9129 10
+#vine_submit_workers -d all -T condor --cores 12 --memory 16000 --disk 25000 $HOSTNAME 9129 5
+
+

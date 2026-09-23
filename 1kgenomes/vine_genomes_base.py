@@ -26,7 +26,7 @@ if __name__ == "__main__":
         nargs="?",
         type=int,
         help="number of individuals tasks to split the input",
-	    default=10
+	    default=3
     )
 
     parser.add_argument(
@@ -48,15 +48,9 @@ if __name__ == "__main__":
 
     m = vine.Manager(port=args.port)
     m.set_name(args.name)
-    
 
-    m.tune("wait-for-workers", 5)
-    #m.tune("reset-sched-cursor", 1)
-    #m.tune("attempt-schedule-depth", args.schedule_depth)
-    #m.tune("max-retrievals", 0)
 
-    m.tune("hungry-minimum-factor", 1)
-    m.tune("hungry-minimum", 2)
+    m.tune("wait-for-workers", args.num_chr)
 
     eas = m.declare_file("EAS")
     columns = m.declare_file("columns.txt")
@@ -66,18 +60,14 @@ if __name__ == "__main__":
     mut_overlap_exec = m.declare_file("bin/mutation_overlap.py")
     frequency_exec = m.declare_file("bin/frequency.py")
     
-    subgraph_priority = 1000
-
-    all_tasks = []
+    subgraph_priority = 1
 
     for chr_num in range(1, args.num_chr + 1):
-        chr_tasks = []
-
 
         chr_file_str = f"ALL.chr{chr_num}.250000.vcf"
         sift_file_str = f"ALL.chr{chr_num}.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf"
 
-        #chr_file = m.declare_file(chr_file_str, cache=True)
+        chr_file = m.declare_file(chr_file_str, cache=True)
         sift_file = m.declare_file(sift_file_str, cache=True)
 
         individuals_outputs = []
@@ -86,26 +76,26 @@ if __name__ == "__main__":
             output_file = m.declare_temp() #m.declare_temp(f"chr{chr_num}n-{i}-{i+100}.tar.gz")
 
             t = vine.Task(
-                command=f"./individuals.py /groups/dthain/users/cthoma26/annotations/1kgenomes/{chr_file_str} {chr_num} {i} {i+100} 6000",
+                command=f"./individuals.py {chr_file_str} {chr_num} {i} {i+100} 6000",
                 inputs= {
-        #            chr_file: {"remote_name" : chr_file_str},
+                    chr_file: {"remote_name" : chr_file_str},
                     individuals_exec: {"remote_name" : "individuals.py"},
                     columns: {"remote_name" : "columns.txt"},
                 },
                 outputs = {
                     output_file: {"remote_name" : f"chr{chr_num}n-{i}-{i+100}.tar.gz"},
                 },
-                priority=subgraph_priority,
+                #priority=1+subgraph_priority,
                 #category=f"{chr_num}",
                 memory=1000,
                 disk=5000,
-                cores=4
+                cores=1
             )
             t.worker_selection_algorithm = 2
             individuals_outputs.append(output_file)
 
-            chr_tasks.append(t)
-#            print(f"submitted task {t.id}: {t.command}")
+            task_id = m.submit(t)
+            print(f"submitted task {t.id}: {t.command}")
 
         merge_output = m.declare_temp() #m.declare_temp(f"chr{chr_num}n.tar.gz")
         merge = vine.Task(
@@ -114,11 +104,10 @@ if __name__ == "__main__":
             outputs={merge_output: {"remote_name" : f"chr{chr_num}n.tar.gz"}},
             #category=f"{chr_num}",
             disk=5000,
-            priority=subgraph_priority,
-            cores=12
+            #priority=2+subgraph_priority
         )
         merge.worker_selection_algorithm = 2
-        chr_tasks.append(merge)
+        m.submit(merge)
 
         sift_output = m.declare_temp() # m.declare_temp(f"sifted.SIFT.chr{chr_num}.txt")
         sift = vine.Task(
@@ -130,17 +119,15 @@ if __name__ == "__main__":
             outputs={
                 sift_output: {"remote_name" : f"sifted.SIFT.chr{chr_num}.txt"},
             },
-            priority=subgraph_priority,
-            #category=f"{chr_num}",
-            cores=12,
+            #priority=3+subgraph_priority,
+            #category=f"{chr_num}"
         )
         sift.worker_selection_algorithm = 2
-        chr_tasks.append(sift)
+        m.submit(sift)
 
-        #mut_output = m.declare_file(f"chr{chr_num}-EAS")
-        mut_output = m.declare_file(f"fakeput-mut")
+        mut_output = m.declare_file(f"chr{chr_num}-EAS")
         mutation = vine.Task(
-            command=f"./mutation_overlap.py -c {chr_num} -pop EAS; echo hello > fakeput-mut",
+            command=f"./mutation_overlap.py -c {chr_num} -pop EAS",
             inputs={
                 merge_output: {"remote_name" : f"chr{chr_num}n.tar.gz"},
                 sift_output: {"remote_name" : f"sifted.SIFT.chr{chr_num}.txt"},
@@ -148,20 +135,17 @@ if __name__ == "__main__":
                 eas: {"remote_name" : "EAS"},
             },
             outputs={
-                mut_output: {"remote_name" : mut_output.source(), "failure_only" : True},
-                mut_output: {"remote_name" : "fakeput-mut"},
+                mut_output: {"remote_name" : mut_output.source()},
             },
-            priority=subgraph_priority,
-            #category=f"{chr_num}",
-            cores=12
+            #priority=4+subgraph_priority,
+            #category=f"{chr_num}"
         )
         mutation.worker_selection_algorithm = 2
-        chr_tasks.append(mutation)
+        m.submit(mutation)
 
-#        frequency_output = m.declare_file(f"chr{chr_num}-EAS-freq")
-        frequency_output = m.declare_file(f"fakeput-freq")
+        frequency_output = m.declare_file(f"chr{chr_num}-EAS-freq")
         frequency = vine.Task(
-            command=f"./frequency.py -c {chr_num} -pop EAS; echo hello > fakeput-freq",
+            command=f"./frequency.py -c {chr_num} -pop EAS",
             inputs={
                 eas: {"remote_name" : "EAS"},
                 merge_output: {"remote_name" : f"chr{chr_num}n.tar.gz"},
@@ -170,59 +154,30 @@ if __name__ == "__main__":
                 frequency_exec: {"remote_name" : "frequency.py"},
             },
             outputs={
-#                frequency_output: {"remote_name" : frequency_output.source(), "failure_only" : True},
-            frequency_output: {"remote_name" : "fakeput-freq"},
+                frequency_output: {"remote_name" : frequency_output.source()},
             },
-            priority=subgraph_priority,
-            category=f"{chr_num}",
-            cores=12,
+            #priority=4+subgraph_priority,
+            #category=f"{chr_num}"
         )
         frequency.worker_selection_algorithm = 2
-        chr_tasks.append(frequency)
+        m.submit(frequency)
 
-        subgraph_priority -= 10
-        all_tasks.append(chr_tasks)
-
-    top_ordering = []
-    for l in all_tasks:
-        top_ordering += l
-    
-
-#
-#    for c in all_tasks:
-#        if not top_ordering:
-#            top_ordering = c
-#        elif len(top_ordering) < 2 * len(c):
-#            top_ordering += c
-#        else:
-#            shuffle_component = top_ordering[-len(c):]
-#            top_ordering = top_ordering[:-len(c)] + list(itertools.chain.from_iterable(zip(shuffle_component,c)))
-    
-    for t in top_ordering:
-        print(t.command)
+        subgraph_priority += 100
 
     print(f"TaskVine listening for workers on {m.port}")
-    while len(top_ordering):
-        while m.hungry() and len(top_ordering):
-                task_id = m.submit(top_ordering.pop(0))
-                print(f"submitted task {task_id}")
 
-        if not m.empty():
-            t = m.wait(5)
-            if t:
-                if t.successful():
-                    print(f"task {t.id} complete")
-                elif t.completed():
-                    print(
-                        f"task {t.id} exited {t.exit_code}"
-                    )
-                else:
-                    print(f"task {t.id} failed with status {t.result}")
-    
-
+    print("Waiting for tasks to complete...")
     while not m.empty():
         t = m.wait(5)
         if t:
-            print(f"task {t.id} complete")
+            if t.successful():
+                print(f"task {t.id} result: {t.std_output}")
+            elif t.completed():
+                print(
+                    f"task {t.id} completed with an executin error, exit code {t.exit_code}"
+                )
+            else:
+                print(f"task {t.id} failed with status {t.result}")
+
     print("all tasks complete!")
 # vim: set sts=4 sw=4 ts=4 expandtab ft=python:
