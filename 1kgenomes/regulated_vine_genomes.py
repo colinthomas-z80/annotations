@@ -9,6 +9,10 @@ import ndcctools.taskvine as vine
 import argparse
 import getpass
 
+# The chromosome and annotation files are read in place from the shared filesystem,
+# rather than sent by the manager, which blocks while it sends each 1.2-1.7 GB file.
+shared_dir = "/groups/dthain/users/cthoma26/annotations/1kgenomes"
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
@@ -81,16 +85,13 @@ if __name__ == "__main__":
         chr_file_str = f"ALL.chr{chr_num}.250000.vcf"
         sift_file_str = f"ALL.chr{chr_num}.phase3_shapeit2_mvncall_integrated_v5.20130502.sites.annotation.vcf"
 
-        #chr_file = m.declare_file(chr_file_str, cache=True)
-        sift_file = m.declare_file(sift_file_str, cache=True)
-
         individuals_outputs = []
 
         for i in range(1, (args.num_individuals*100)+1, 100):
             output_file = m.declare_temp() #m.declare_temp(f"chr{chr_num}n-{i}-{i+100}.tar.gz")
 
             t = vine.Task(
-                command=f"./individuals.py /groups/dthain/users/cthoma26/annotations/1kgenomes/{chr_file_str} {chr_num} {i} {i+100} 6000",
+                command=f"./individuals.py {shared_dir}/{chr_file_str} {chr_num} {i} {i+100} 6000",
                 inputs= {
         #            chr_file: {"remote_name" : chr_file_str},
                     individuals_exec: {"remote_name" : "individuals.py"},
@@ -123,9 +124,8 @@ if __name__ == "__main__":
 
         sift_output = m.declare_temp() # m.declare_temp(f"sifted.SIFT.chr{chr_num}.txt")
         sift = vine.Task(
-            command=f"./sifting.py {sift_file_str} {chr_num}",
+            command=f"./sifting.py {shared_dir}/{sift_file_str} {chr_num}",
             inputs={
-                sift_file: {"remote_name" : sift_file_str},
                 sifting_exec: {"remote_name" : "sifting.py"},
             },
             outputs={
