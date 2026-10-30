@@ -3,7 +3,8 @@
 # 1000 Genomes with each chromosome as a regulated subgraph: the manager keeps
 # --window chromosomes in flight, counts a chromosome when its mutation_overlap
 # and frequency tasks both return, and reports a resource signal that
-# factory.sh follows to size the worker pool.
+# factory.sh follows to size the worker pool. --replicas repeats the pass over the
+# chromosome inputs, giving more subgraphs from the same files.
 
 import ndcctools.taskvine as vine
 import argparse
@@ -25,6 +26,14 @@ if __name__ == "__main__":
         nargs="?",
         type=int,
         help="number of chromosome files (sub workflows)",
+        default=1,
+    )
+
+    parser.add_argument(
+        "--replicas",
+        nargs="?",
+        type=int,
+        help="passes over the chromosome files, each chromosome a new subgraph per pass",
         default=1,
     )
 
@@ -77,9 +86,12 @@ if __name__ == "__main__":
     mut_overlap_exec = m.declare_file("bin/mutation_overlap.py")
     frequency_exec = m.declare_file("bin/frequency.py")
 
-    for chr_num in range(1, args.num_chr + 1):
+    for subgraph in range(args.num_chr * args.replicas):
 
-        category = f"chr{chr_num}"
+        # Passes are submitted in turn, so repeats of a chromosome are num_chr apart.
+        chr_num = subgraph % args.num_chr + 1
+        rep = subgraph // args.num_chr
+        category = f"chr{chr_num}.{rep}"
         m.set_semantic_concurrency(category, args.concurrency or args.num_individuals + 1)
 
         chr_file_str = f"ALL.chr{chr_num}.250000.vcf"
@@ -138,7 +150,7 @@ if __name__ == "__main__":
 
         # mutation_overlap and frequency both end the chromosome. Both are outputs,
         # and the chromosome counts once, when the last of them returns.
-        mut_output = m.declare_file(f"chr{chr_num}-EAS")
+        mut_output = m.declare_file(f"chr{chr_num}-EAS.{rep}")
         mutation = vine.Task(
             command=f"./mutation_overlap.py -c {chr_num} -pop EAS",
             inputs={
@@ -148,7 +160,7 @@ if __name__ == "__main__":
                 eas: {"remote_name" : "EAS"},
             },
             outputs={
-                mut_output: {"remote_name" : mut_output.source(), "failure_only" : True},
+                mut_output: {"remote_name" : f"chr{chr_num}-EAS", "failure_only" : True},
             },
             semantic_category=category,
             semantic_output=True,
@@ -156,7 +168,7 @@ if __name__ == "__main__":
         )
         m.submit(mutation)
 
-        frequency_output = m.declare_file(f"chr{chr_num}-EAS-freq")
+        frequency_output = m.declare_file(f"chr{chr_num}-EAS-freq.{rep}")
         frequency = vine.Task(
             command=f"./frequency.py -c {chr_num} -pop EAS",
             inputs={
@@ -167,7 +179,7 @@ if __name__ == "__main__":
                 frequency_exec: {"remote_name" : "frequency.py"},
             },
             outputs={
-                frequency_output: {"remote_name" : frequency_output.source(), "failure_only" : True},
+                frequency_output: {"remote_name" : f"chr{chr_num}-EAS-freq", "failure_only" : True},
             },
             semantic_category=category,
             semantic_output=True,
