@@ -30,6 +30,7 @@ description = 'Process mutation sets (-c and -POP are required).'
 parser = argparse.ArgumentParser(description=description)
 parser.add_argument("-c", type=int, help=c_help)
 parser.add_argument("-pop", help=pop_help)
+parser.add_argument("--outdir", help="directory for the output data (default: a directory per chromosome on the shared filesystem)")
 args = parser.parse_args()
 c = args.c
 
@@ -41,7 +42,7 @@ n_indiv = 52
 siftfile = './sifted.SIFT.chr' + str(c) + '.txt'
 data_dir = './'
 pop_dir = './'
-outdata_dir = "/groups/dthain/users/cthoma26/annotations/1kgenomes/chr{0}-{1}-freq/output_no_sift/".format(str(args.c), str(args.pop)) 
+outdata_dir = args.outdir or "/groups/dthain/users/cthoma26/annotations/1kgenomes/chr{0}-{1}-freq/output_no_sift/".format(str(args.c), str(args.pop)) 
 plot_dir = "./groups/dthain/users/cthoma26/annotations/1kgenomes/chr{0}-{1}-freq/plots_no_sift/".format(str(args.c), str(args.pop)) 
 
 if not os.path.exists(outdata_dir):

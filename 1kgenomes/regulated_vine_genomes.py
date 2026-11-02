@@ -168,9 +168,10 @@ if __name__ == "__main__":
         )
         m.submit(mutation)
 
+        # Each replica writes its frequency data to its own directory on the shared filesystem.
         frequency_output = m.declare_file(f"chr{chr_num}-EAS-freq.{rep}")
         frequency = vine.Task(
-            command=f"./frequency.py -c {chr_num} -pop EAS",
+            command=f"./frequency.py -c {chr_num} -pop EAS --outdir {shared_dir}/chr{chr_num}-EAS-freq.{rep}/output_no_sift/",
             inputs={
                 eas: {"remote_name" : "EAS"},
                 merge_output: {"remote_name" : f"chr{chr_num}n.tar.gz"},
